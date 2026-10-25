@@ -8,6 +8,7 @@ module shiftRow_tb();
 	
 	logic[31:0]	row, newRow;
 	logic[1:0]	rowNum;
+	logic clk;
 
     shiftRow dut (
 		.row(row),
@@ -15,34 +16,40 @@ module shiftRow_tb();
 
         .newRow(newRow)
     );
+
+	// generate clock
+	always begin
+		clk = 0; #5;
+		clk = 1; #5;
+	end
 	
     initial begin
 	
-	row = 4'h0001;
+	row = 4'h00000001;
     rowNum = 2'b00;
 	#10;                        // wait required time
-	assert (newRow == 4'h0001)       // check outputs
+	assert (newRow == 4'h00000001)       // check outputs
 	else 
 		$error("Row 0 test failed."); 
 
-    row = 4'h0001;
+    row = 4'h00000001;
     rowNum = 2'b01;
 	#10;                        // wait required time
-	assert (newRow == 4'h0010)       // check outputs
+	assert (newRow == 4'h00000002)       // check outputs
 	else 
 		$error("Row 1 test failed."); 
 
-    row = 4'h0001;
+    row = 4'h00000001;
     rowNum = 2'b10;
 	#10;                        // wait required time
-	assert (newRow == 4'h0100)       // check outputs
+	assert (newRow == 4'h00000004)       // check outputs
 	else 
 		$error("Row 2 test failed."); 
 
     row = 4'h0001;
     rowNum = 2'b11;
 	#10;                        // wait required time
-	assert (newRow == 4'h1000)       // check outputs
+	assert (newRow == 4'h00000008)       // check outputs
 	else 
 		$error("Row 0 test failed."); 
 	
