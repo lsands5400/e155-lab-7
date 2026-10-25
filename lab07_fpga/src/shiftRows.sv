@@ -33,15 +33,15 @@ module shiftRows (input logic [127:0] stateIn,
 endmodule
 
 module shiftRow(input logic [31:0] row,
-                input logic rowNum,
+                input logic [1:0] rowNum,
                 output logic [31:0] newRow);
     
     always_comb begin
         case(rowNum)
-            0: assign newRow = row;
-            1: assign newRow = {row[23:0], row[31:24]};
-            2: assign newRow = {row[15:0], row[31:16]};
-            3: assign newRow = {row[7:0], row[31:8]};
+            2'b00: assign newRow = row;
+            2'b01: assign newRow = {row[23:0], row[31:24]};
+            2'b10: assign newRow = {row[15:0], row[31:16]};
+            2'b11: assign newRow = {row[7:0], row[31:8]};
         endcase
     end
 
