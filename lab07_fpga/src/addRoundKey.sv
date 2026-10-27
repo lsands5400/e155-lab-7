@@ -9,29 +9,95 @@ module addRoundKey (input logic stateIn,
     assign stateIn ^ key;
 endmodule
 
+module cipher (input logic clk, 
+                input logic in, 
+                input logic Nr, 
+                input logic word, 
+                output logic done, 
+                output logic out);
 
-module keyExpansion(key);
-    initial   $readmemh("Rcon.txt", Rcon);
-    i = 0;
-    Nk = 3;
-    while (i <=  Nk) begin
-        w[i] = key[4 * i:4 * i+3]
-        i += 1;
-    end 
+    logic[3:0] roundNum = 4'b0000;
+	logic arkselect;
 
-    while (i <= 4*Nr + 3) begin
-        temp = w[i - 1];
-
-        if (i % Nk == 0) begin
-            temp = subWord(rotWord(temp))^Rcon[i/Nk];
-    
-        else if ((Nk) > 6) && (i % Nk == 4) 
-            temp = subWord(temp);
+    addRoundKey ark0(in, word, stateIn);
+	
+    always_ff @ (posedge clk) begin
+        if (roundNum <= Nr - 1) begin
+			arkselect <= 0;
+			roundNum <= roundNum + 1;
+			done <= 0;
         end
-
-        w[i] = w[i-Nk]^temp;
-        i = i + 1;
+        else if (roundNum = Nr) begin
+			arkselect <= 1;
+			done <= 0;
+        end
+		else begin
+			done <= 1;
+		end
     end
+	
+	sbox sb(stateIn, stateOutSB);
+	shiftRows sr(stateOutSB, stateOutSR);
+	mixcolumns mc(stateOutSR, stateOutMC);
+	arkMux mux(stateOutSR, stateOutMC, arkselect, stateOutMux);
+	addRoundKey ark(stateOutMux, stateIn);
+	
+	if (done == 1) begin
+		assign out = stateIn;
+	end 
+endmodule
+
+module keyExpansion(input logic clk,
+                    input logic key,
+                    input logic Nr,
+                    input logic Nk,
+                    output logic word);
+
+    logic[31:0] temp; 
+	logic[4:0] i = 1'd0;
+
+    always_ff @ (posedge clk) begin
+        if (i <= Nk - 1) begin
+            i <= i + 1;
+			wordSelect <= 0;
+        end 
+
+        if (i <= 4*Nr + 3) begin
+			wordSelect <= 1;
+            i = i + 1;
+        end
+    end
+	
+	if (i <= Nk - 1) begin
+            w[i] <= key[4 * i:4 * i+3];
+        end 
+
+    if (i <= 4*Nr + 3) begin
+		temp <= w[i - 1];
+
+		if (i % Nk == 0) begin
+			rotWord rw(temp);
+			subWord sw(rw);
+			rcon r(i/Nk);
+			temp = sw ^ r;
+		end
+
+		w[i] = w[i-Nk]^temp;
+	end
+	
+	if (i == 4 * Nr +3) begin
+		assign word = w;
+	end
+endmodule
+
+module rcon(input logic index, 
+            output logic value);
+
+    logic [31:0] Rcon[0:9];
+
+    initial   $readmemh("Rcon.txt", Rcon);
+    assign value = Rcon[index];
+
 endmodule
 
 module rotWord(input logic [31:0] word,

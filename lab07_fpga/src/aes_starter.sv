@@ -79,8 +79,17 @@ module aes_core(input  logic         clk,
                 output logic         done, 
                 output logic [127:0] cyphertext);
 
-    // TODO: Your code goes here
-    
+    logic[3:0] Nr;
+    assign Nr = 4'b1010;
+
+    logic[2:0] Nk;
+    assign Nk = 3'b100;
+
+    if(load) begin
+        keyExpansion ke(clk, key, Nr, Nk, word);
+        cipher c(clk, plaintext, Nr, word, done, cyphertext);
+    end
+
 endmodule
 
 /////////////////////////////////////////////
