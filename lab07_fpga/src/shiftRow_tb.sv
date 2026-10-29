@@ -24,34 +24,34 @@ module shiftRow_tb();
 	end
 	
     initial begin
-	
-	row = 4'h00000001;
-    rowNum = 2'b00;
-	#10;                        // wait required time
-	assert (newRow == 4'h00000001)       // check outputs
-	else 
-		$error("Row 0 test failed."); 
+		row = 32'h00000001;
+		rowNum = 2'b00;
+		#10;                        // wait required time
+		assert (newRow == 32'h00000001)       // check outputs
+		else 
+			$error("Row 0 test failed."); 
 
-    row = 4'h00000001;
-    rowNum = 2'b01;
-	#10;                        // wait required time
-	assert (newRow == 4'h00000002)       // check outputs
-	else 
-		$error("Row 1 test failed."); 
+		row = 32'h00000001;
+		rowNum = 2'b01;
+		#10;                        // wait required time
+		assert (newRow == 32'h00000100)       // check outputs
+		else 
+			$error("Row 1 test failed."); 
 
-    row = 4'h00000001;
-    rowNum = 2'b10;
-	#10;                        // wait required time
-	assert (newRow == 4'h00000004)       // check outputs
-	else 
-		$error("Row 2 test failed."); 
+		row = 32'h00000001;
+		rowNum = 2'b10;
+		#10;                        // wait required time
+		assert (newRow == 32'h00010000)       // check outputs
+		else 
+			$error("Row 2 test failed."); 
 
-    row = 4'h0001;
-    rowNum = 2'b11;
-	#10;                        // wait required time
-	assert (newRow == 4'h00000008)       // check outputs
-	else 
-		$error("Row 0 test failed."); 
-	
+		row = 32'h0001;
+		rowNum = 2'b11;
+		#10;                        // wait required time
+		assert (newRow == 32'h01000000)       // check outputs
+		else 
+			$error("Row 0 test failed."); 
+    $stop;
     end
 endmodule
+

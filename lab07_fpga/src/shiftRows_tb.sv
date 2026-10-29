@@ -4,7 +4,7 @@
 // This is the testbench module for the shiftRows module.
 `timescale 1 ns/1 ns
 
-module shiftRow_tb();
+module shiftRows_tb();
 	
 	logic[127:0] stateIn, stateOut;
 	logic clk;
@@ -20,13 +20,12 @@ module shiftRow_tb();
 		clk = 1; #5;
 	end
 		
-    initial begin
-	
-	stateIn = 32'h00000001_00000001_00000001_00000001;
-	#10;                        // wait required time
-	assert (stateOut == 32'h00000001_00000002_00000004_00000008)       // check outputs
-	else 
-		$error("shiftRows test failed."); 
-
-    end
+  initial begin
+    stateIn = 127'h0a0b0c0d_01020304_0d0c0b0a_04030201;
+    #10;                        // wait required time
+    assert (stateOut == 127'h0a020b01_010c020d_0d030c04_040b030a)       // check outputs
+    else 
+      $error("shiftRows test failed."); 
+    $stop;
+  end
 endmodule

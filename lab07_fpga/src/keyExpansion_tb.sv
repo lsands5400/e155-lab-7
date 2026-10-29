@@ -22,9 +22,9 @@ module keyExpansion_tb();
 		
     initial begin
 	
-	stateIn = 32'2b7e151628aed2a6abf7158809cf4f3c;
+	stateIn = 127'h2b7e151628aed2a6abf7158809cf4f3c;
 	#10;                        // wait required time
-	assert (stateOut == 16'h0001001001001000)       // check outputs
+	assert (stateOut == 127'h0001001001001000)       // check outputs
 	else 
 		$error("shiftRows test failed."); 
 
